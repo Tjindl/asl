@@ -1,0 +1,64 @@
+.recognition {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.upload-section {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.image-preview {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.webcam-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.webcam {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.result {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.loading {
+  text-align: center;
+  color: #666;
+  margin: 1rem 0;
+}
