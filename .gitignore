@@ -7,7 +7,7 @@ __pycache__/
 backend/venv/
 backend/.venv/
 .venv/
-*.h5
+
 
 # Node
 node_modules/
