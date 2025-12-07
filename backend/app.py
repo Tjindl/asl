@@ -33,6 +33,9 @@ def preprocess_image(image_bytes):
         print(f"Error preprocessing image: {e}")
         raise
 
+# Define class labels (excluding J and Z)
+CLASS_LABELS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
+
 @app.route('/')
 def home():
     return jsonify({"message": "ASL Recognition API is running"})
@@ -61,11 +64,18 @@ def predict():
         print(f"Raw model prediction: {prediction}")
         predicted_class = np.argmax(prediction[0])
         confidence = float(prediction[0][predicted_class])
+        
+        # Map index to letter using CLASS_LABELS
+        if predicted_class < len(CLASS_LABELS):
+            predicted_letter = CLASS_LABELS[predicted_class]
+        else:
+            predicted_letter = "Unknown"
+            print(f"Warning: Predicted class index {predicted_class} is out of bounds.")
 
-        print(f"Prediction: {chr(predicted_class + ord('A'))}, Confidence: {confidence}")
+        print(f"Prediction: {predicted_letter}, Confidence: {confidence}")
 
         return jsonify({
-            'prediction': chr(predicted_class + ord('A')),  # Map to letter
+            'prediction': predicted_letter,
             'confidence': confidence
         })
 

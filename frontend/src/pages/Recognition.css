@@ -19,20 +19,30 @@
   max-width: 100%;
   max-height: 400px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .webcam-container {
-  display: flex;
-  justify-content: center;
+  position: relative;
+  display: inline-block;
   margin-bottom: 1rem;
 }
 
 .webcam {
-  width: 100%;
-  max-width: 500px;
+  display: block;
+  width: 640px;
+  height: 480px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 640px;
+  height: 480px;
+  pointer-events: none;
 }
 
 .button {
@@ -61,4 +71,14 @@
   text-align: center;
   color: #666;
   margin: 1rem 0;
+}
+
+.error {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  color: #721c24;
+  font-weight: 500;
 }
