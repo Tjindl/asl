@@ -75,6 +75,15 @@ The ASL recognition model is a Convolutional Neural Network (CNN) trained on the
   - Dropout (0.5)
   - Output Dense layer (24 units, Softmax activation)
 
+### Why this Architecture?
+
+We chose a **Convolutional Neural Network (CNN)** because it is the industry standard for image recognition. Here's a simple breakdown of why each part is used:
+
+1.  **Conv2D (Convolutional Layers)**: These act like "feature detectors." Early layers might detect simple lines or curves, while deeper layers combine these to recognize complex shapes like fingers or hand orientations. They work regardless of where the hand is in the image.
+2.  **MaxPooling**: This reduces the size of the image data while keeping the most important features. It makes the model faster and less sensitive to small shifts or distortions in the image.
+3.  **Dropout**: This randomly turns off some neurons during training. It forces the model to learn robust features and prevents it from just "memorizing" the training images (overfitting).
+4.  **Dense Layers**: After features are extracted, these layers act as the final classifier to decide which of the 24 letters the features represent.
+
 ### Data Preprocessing
 - Images are resized to 28x28 pixels.
 - Converted to grayscale.
