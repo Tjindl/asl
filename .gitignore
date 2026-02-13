@@ -33,7 +33,7 @@ dist/
 build/
 *.egg-info/
 
-# Model files (large binaries)
-*.joblib
+# Model files (Metadata only by default, override for deployment)
+# *.joblib
 *.h5
-*.task
+# *.task
