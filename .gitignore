@@ -20,6 +20,8 @@ build/
 # Environment
 .env
 .env.local
+.env.development
+.env.production.local
 .DS_Store
 
 # IDE
@@ -30,3 +32,8 @@ build/
 dist/
 build/
 *.egg-info/
+
+# Model files (large binaries)
+*.joblib
+*.h5
+*.task
