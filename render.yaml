@@ -11,13 +11,11 @@ services:
         value: "*" # Will be restricted once frontend URL is stable
 
   # React Frontend
-  - type: web
+  - type: static_site
     name: asl-frontend
-    env: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: build
-    plan: free
     envVars:
       - key: REACT_APP_API_URL
         value: https://asl-backend.onrender.com
