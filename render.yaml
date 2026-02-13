@@ -11,8 +11,9 @@ services:
         value: "*" # Will be restricted once frontend URL is stable
 
   # React Frontend
-  - type: static_site
+  - type: web
     name: asl-frontend
+    env: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: build
