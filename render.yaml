@@ -1,0 +1,23 @@
+services:
+  # Flask Backend
+  - type: web
+    name: asl-backend
+    env: docker
+    dockerContext: backend
+    dockerfilePath: Dockerfile
+    plan: free
+    envVars:
+      - key: FRONTEND_URL
+        value: "*" # Will be restricted once frontend URL is stable
+
+  # React Frontend
+  - type: static
+    name: asl-frontend
+    env: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
+    plan: free
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://asl-backend.onrender.com # Default Render host pattern

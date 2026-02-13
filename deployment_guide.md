@@ -1,87 +1,50 @@
-# Azure Deployment Guide
+# Your ASL App Azure Deployment
 
-This guide describes how to deploy the ASL Recognition App to Microsoft Azure.
+I have already started the deployment for you! Below are the specific resources I created and the next steps.
+
+## 1. Resources Created
+- **Resource Group**: `aslapprg`
+- **Container Registry**: `aslappregistrytj`
+- **Backend Web App**: `asl-backend-api` (Status: Starting up)
+
+## Deploying ASL Recognition App to Render
+
+We are switching the deployment from Azure to **Render** for a more streamlined experience. We will use Render's **Blueprint (Infrastructure as Code)** feature to set up both the backend and frontend.
 
 ## Prerequisites
-- [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) installed.
-- [Docker](https://www.docker.com/products/docker-desktop/) installed and running.
-- An active Azure Subscription.
+1.  **Render Account**: Sign up at [render.com](https://render.com).
+2.  **GitHub Connection**: Link your GitHub account to Render.
+3.  **Repository**: Ensure your code (including the new `render.yaml`) is pushed to your GitHub repository.
 
-## 1. Backend: Azure App Service (Web App for Containers)
+## Deployment Steps
 
-The backend is a Flask application that will run in a Docker container.
-
-### Step 1: Create Azure Resources
+### Step 1: Push Changes to GitHub
+Make sure the `render.yaml` and latest code are pushed:
 ```bash
-# Login to Azure
-az login
-
-# Create a resource group
-az group create --name asl-app-rg --location eastus
-
-# Create an Azure Container Registry (ACR)
-az acr create --resource-group asl-app-rg --name aslregistry$(date +%s) --sku Basic
+git add .
+git commit -m "Add Render deployment blueprint"
+git push origin finalizing
 ```
 
-### Step 2: Build and Push Docker Image
+### Step 2: Create a New Blueprint
+1.  Go to the [Render Dashboard](https://dashboard.render.com).
+2.  Click **New** (top right) -> **Blueprint**.
+3.  Connect your GitHub repository.
+4.  Render will automatically detect the `render.yaml` file.
+5.  Click **Apply**.
+
+### Step 3: Monitor Deployment
+Render will now create two services:
+- **asl-backend**: A Web Service running your Dockerized Flask API.
+- **asl-frontend**: A Static Site serving your React application.
+
+### Step 4: Final Configuration (If needed)
+The blueprint is designed to link them automatically, but if you need to adjust URLs:
+1.  **Backend**: `FRONTEND_URL` environment variable should point to your Render frontend URL.
+2.  **Frontend**: `REACT_APP_API_URL` environment variable should point to your Render backend URL.
+
+## Local Testing
+You can still run the entire stack locally using Docker Compose:
 ```bash
-# Login to ACR
-az acr login --name <your-acr-name>
-
-# Build and push
-az acr build --registry <your-acr-name> --image asl-backend ./backend
+docker-compose up --build
 ```
-
-### Step 3: Create App Service
-```bash
-# Create an App Service Plan
-az appservice plan create --name asl-backend-plan --resource-group asl-app-rg --is-linux --sku B1
-
-# Create the Web App for Containers
-az webapp create --resource-group asl-app-rg --plan asl-backend-plan --name asl-backend-api --deployment-container-image-name <your-acr-name>.azurecr.io/asl-backend:latest
-```
-
-## 2. Deployment via Azure Portal (No CLI required)
-
-Since you've already pushed your code to GitHub, the easiest way to deploy is using the **Azure Portal** and linking it to your repository.
-
-### Part A: Host the Backend (Azure App Service)
-1.  Go to the [Azure Portal](https://portal.azure.com).
-2.  Click **Create a resource** > **Web App**.
-3.  **Basics**:
-    - **Resource Group**: Create new (e.g., `asl-app-rg`).
-    - **Name**: `asl-backend-api` (must be unique).
-    - **Publish**: **Container**.
-    - **Operating System**: **Linux**.
-4.  **Container**:
-    - **Image Source**: **GitHub Actions**.
-    - Link your GitHub account and select the `asl` repository and `finalizing` branch.
-    - Azure will automatically create a GitHub Action file in your repo to build and deploy the `backend/Dockerfile`.
-5.  **Review + create**.
-
-### Part B: Host the Frontend (Azure Static Web Apps)
-1.  Search for **Static Web Apps** in the Portal.
-2.  **Create**:
-    - **Name**: `asl-frontend`.
-    - **Plan type**: **Free**.
-    - **Deployment details**: Select **GitHub**.
-    - Select your repository and the `finalizing` branch.
-    - **Build Presets**: **React**.
-    - **App location**: `/frontend`.
-    - **Api location**: (leave blank).
-    - **Output location**: `build`.
-3.  **Review + create**.
-
----
-
-## 3. Configuration & Connecting the two
-
-Once both are deployed:
-
-1.  **Get URLs**: Find the URL for your Backend (e.g., `asl-backend-api.azurewebsites.net`) and Frontend.
-2.  **Enable CORS**:
-    - In the Backend Web App -> **Configuration** -> **Application settings**.
-    - Add `FRONTEND_URL` = `https://<your-frontend-url>.azurestaticapps.net`.
-3.  **Update Frontend API URL**:
-    - In the Static Web App -> **Configuration**.
-    - Add `REACT_APP_API_URL` = `https://asl-backend-api.azurewebsites.net`.
