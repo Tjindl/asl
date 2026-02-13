@@ -4,16 +4,16 @@ services:
     name: asl-backend
     env: docker
     dockerContext: backend
-    dockerfilePath: Dockerfile
+    dockerfilePath: backend/Dockerfile
     plan: free
     envVars:
       - key: FRONTEND_URL
-        value: "*" # Will be restricted once frontend URL is stable
+        value: "*"
 
   # React Frontend
   - type: web
     name: asl-frontend
-    env: static
+    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: build
