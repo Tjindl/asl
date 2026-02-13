@@ -41,31 +41,47 @@ az appservice plan create --name asl-backend-plan --resource-group asl-app-rg --
 az webapp create --resource-group asl-app-rg --plan asl-backend-plan --name asl-backend-api --deployment-container-image-name <your-acr-name>.azurecr.io/asl-backend:latest
 ```
 
-## 2. Frontend: Azure Static Web Apps
+## 2. Deployment via Azure Portal (No CLI required)
 
-The frontend is a React application. Azure Static Web Apps is the easiest and most cost-effective way to host it.
+Since you've already pushed your code to GitHub, the easiest way to deploy is using the **Azure Portal** and linking it to your repository.
 
-### Option A: Via GitHub (Recommended)
-1.  Push your code to a GitHub repository.
-2.  Go to the [Azure Portal](https://portal.azure.com).
-3.  Create a new **Static Web App**.
-4.  Link your GitHub repo and select the branch.
-5.  Select **React** as the Build Preset.
-6.  Set **App location** to `/frontend` and **Output location** to `build`.
+### Part A: Host the Backend (Azure App Service)
+1.  Go to the [Azure Portal](https://portal.azure.com).
+2.  Click **Create a resource** > **Web App**.
+3.  **Basics**:
+    - **Resource Group**: Create new (e.g., `asl-app-rg`).
+    - **Name**: `asl-backend-api` (must be unique).
+    - **Publish**: **Container**.
+    - **Operating System**: **Linux**.
+4.  **Container**:
+    - **Image Source**: **GitHub Actions**.
+    - Link your GitHub account and select the `asl` repository and `finalizing` branch.
+    - Azure will automatically create a GitHub Action file in your repo to build and deploy the `backend/Dockerfile`.
+5.  **Review + create**.
 
-### Option B: Via Azure CLI
-```bash
-az staticwebapp create --name asl-frontend --resource-group asl-app-rg --source ./frontend --location eastus --branch main --token <GITHUB_TOKEN>
-```
+### Part B: Host the Frontend (Azure Static Web Apps)
+1.  Search for **Static Web Apps** in the Portal.
+2.  **Create**:
+    - **Name**: `asl-frontend`.
+    - **Plan type**: **Free**.
+    - **Deployment details**: Select **GitHub**.
+    - Select your repository and the `finalizing` branch.
+    - **Build Presets**: **React**.
+    - **App location**: `/frontend`.
+    - **Api location**: (leave blank).
+    - **Output location**: `build`.
+3.  **Review + create**.
 
-## 3. Configuration
+---
 
-### Backend Environment Variables
-Update the Web App settings to allow your frontend URL:
-```bash
-az webapp config appsettings set --resource-group asl-app-rg --name asl-backend-api --settings FRONTEND_URL=https://<your-static-web-app-url>.azurestaticapps.net
-```
+## 3. Configuration & Connecting the two
 
-### Frontend Environment Variables
-In Azure Static Web Apps, you can add environment variables in the Portal or via CLI:
-- `REACT_APP_API_URL`: `https://asl-backend-api.azurewebsites.net`
+Once both are deployed:
+
+1.  **Get URLs**: Find the URL for your Backend (e.g., `asl-backend-api.azurewebsites.net`) and Frontend.
+2.  **Enable CORS**:
+    - In the Backend Web App -> **Configuration** -> **Application settings**.
+    - Add `FRONTEND_URL` = `https://<your-frontend-url>.azurestaticapps.net`.
+3.  **Update Frontend API URL**:
+    - In the Static Web App -> **Configuration**.
+    - Add `REACT_APP_API_URL` = `https://asl-backend-api.azurewebsites.net`.
